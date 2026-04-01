@@ -6,370 +6,395 @@
 <title>EQ-5D-5L UK Value Set Calculator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
   --bg:#f5f4f0;--surface:#fff;--surface2:#f9f8f5;--border:#e2e0d8;--border2:#ccc9be;
   --text:#1a1917;--text2:#5a5750;--text3:#8a877e;
-  --accent:#1a4a3c;--accent-light:#e8f2ee;
-  --accent2:#c84b1a;--accent2-light:#fdf0eb;
-  --warn:#7a4d00;--warn-light:#fef7e8;
-  --radius:10px;--radius-lg:16px;
-  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --accent:#1a4a3c;--accent-l:#e8f2ee;--accent2:#c84b1a;--accent2-l:#fdf0eb;
+  --warn:#7a4d00;--warn-l:#fef7e8;--radius:10px;--radius-lg:16px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
 }
 body.dark{
   --bg:#0f1110;--surface:#1a1e1c;--surface2:#222724;--border:#2e3330;--border2:#3d4440;
   --text:#e8e6e0;--text2:#9a9890;--text3:#6a6860;
-  --accent:#4db896;--accent-light:#0d2e22;
-  --accent2:#e07050;--accent2-light:#2e1a10;
-  --warn:#d4a030;--warn-light:#2e2000;
+  --accent:#4db896;--accent-l:#0d2e22;--accent2:#e07050;--accent2-l:#2e1a10;
+  --warn:#d4a030;--warn-l:#2e2000;
 }
-
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;transition:background .2s,color .2s}
 
-/* HEADER */
-.header{background:var(--accent);color:#fff;padding:1.5rem 2rem;position:relative;overflow:hidden}
-.header::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.04)}
-.header-inner{max-width:1140px;margin:0 auto;position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
-.header-left{}
-.header-badge{display:inline-block;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;margin-bottom:.6rem}
-.header h1{font-family:'DM Serif Display',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:400;color:#fff;line-height:1.2;margin-bottom:.3rem}
-.header p{color:rgba(255,255,255,.65);font-size:.82rem;font-weight:300}
-.dark-toggle{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 12px;cursor:pointer;color:rgba(255,255,255,.9);font-size:.78rem;font-weight:500;flex-shrink:0;transition:background .15s}
-.dark-toggle:hover{background:rgba(255,255,255,.2)}
-.toggle-track{width:32px;height:18px;background:rgba(255,255,255,.3);border-radius:9px;position:relative;transition:background .2s}
-.toggle-track.on{background:#fff}
-.toggle-thumb{width:12px;height:12px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s,background .2s}
-.toggle-track.on .toggle-thumb{left:17px;background:var(--accent)}
+.header{background:var(--accent);color:#fff;padding:1.4rem 2rem;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.04)}
+.hi{max-width:1160px;margin:0 auto;position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.hbadge{display:inline-block;background:rgba(255,255,255,.15);color:rgba(255,255,255,.88);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;margin-bottom:.5rem}
+.header h1{font-family:'DM Serif Display',serif;font-size:clamp(1.3rem,2.8vw,1.9rem);font-weight:400;color:#fff;line-height:1.2;margin-bottom:.25rem}
+.header p{color:rgba(255,255,255,.62);font-size:.8rem;font-weight:300}
+.dtog{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:5px 11px;cursor:pointer;color:rgba(255,255,255,.88);font-size:.75rem;font-weight:500;flex-shrink:0;transition:background .15s}
+.dtog:hover{background:rgba(255,255,255,.2)}
+.ttrack{width:30px;height:17px;background:rgba(255,255,255,.3);border-radius:9px;position:relative;transition:background .2s}
+.ttrack.on{background:#fff}
+.tthumb{width:11px;height:11px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s,background .2s}
+.ttrack.on .tthumb{left:16px;background:var(--accent)}
 
-/* NAV TABS */
-.nav-wrap{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.nav-inner{max-width:1140px;margin:0 auto;padding:0 2rem;display:flex;gap:0}
-.nav-tab{padding:.85rem 1.25rem;font-size:.85rem;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.navwrap{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.navinner{max-width:1160px;margin:0 auto;padding:0 2rem;display:flex}
+.ntab{padding:.8rem 1.2rem;font-size:.83rem;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif}
+.ntab:hover{color:var(--text)}
+.ntab.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-/* MAIN */
-.main{max-width:1140px;margin:0 auto;padding:1.5rem 2rem}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
+.main{max-width:1160px;margin:0 auto;padding:1.5rem 2rem}
+.tp{display:none}.tp.active{display:block}
 
-/* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow)}
-.card-title{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:1.1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.2rem 1.4rem;box-shadow:var(--sh)}
+.ctitle{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem}
 
-/* LAYOUT */
-.two-col{display:grid;grid-template-columns:360px 1fr;gap:1.25rem;align-items:start}
-@media(max-width:860px){.two-col{grid-template-columns:1fr}}
+/* TWO COL */
+.tcol{display:grid;grid-template-columns:370px 1fr;gap:1.2rem;align-items:start}
+@media(max-width:880px){.tcol{grid-template-columns:1fr}}
 
-/* DIMENSION BUTTONS */
-.dim-group{margin-bottom:1.1rem}
-.dim-label{font-size:.875rem;font-weight:500;color:var(--text);margin-bottom:.4rem;display:flex;align-items:center;gap:6px}
-.dim-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.level-buttons{display:flex;gap:4px}
-.level-btn{flex:1;padding:7px 3px;border:1px solid var(--border);background:var(--surface2);border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;font-size:.75rem;font-weight:500;color:var(--text2);transition:all .12s;text-align:center;line-height:1.2}
-.level-btn:hover{border-color:var(--border2);color:var(--text)}
-.level-btn.active{color:#fff;border-color:transparent;box-shadow:var(--shadow-md)}
-.level-btn .lnum{display:block;font-size:.9rem;font-weight:600;margin-bottom:1px}
-.level-btn .ltxt{display:block;font-size:.6rem;opacity:.85}
+/* DIM BUTTONS */
+.dg{margin-bottom:1rem}
+.dlabel{font-size:.85rem;font-weight:500;color:var(--text);margin-bottom:.35rem;display:flex;align-items:center;gap:6px}
+.ddot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.lbtns{display:flex;gap:3px}
+.lbtn{flex:1;padding:6px 2px;border:1px solid var(--border);background:var(--surface2);border-radius:5px;cursor:pointer;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:500;color:var(--text2);transition:all .12s;text-align:center;line-height:1.2}
+.lbtn:hover{border-color:var(--border2);color:var(--text)}
+.lbtn.active{color:#fff;border-color:transparent;box-shadow:var(--sh-md)}
+.lbtn .ln{display:block;font-size:.88rem;font-weight:600;margin-bottom:1px}
+.lbtn .lt{display:block;font-size:.58rem;opacity:.85}
 
-/* SCORE PANEL */
-.score-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow);text-align:center;margin-bottom:1.25rem}
-.gauge-wrap{margin:.5rem auto .75rem;width:200px;height:108px;position:relative}
-.gauge-value{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:2.2rem;font-weight:500;letter-spacing:-.02em;line-height:1}
-.state-code{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:.95rem;font-weight:500;letter-spacing:.15em;color:var(--text);margin-top:.6rem}
-.state-code-lbl{font-size:.68rem;color:var(--text3);font-family:'Inter',sans-serif;letter-spacing:0;font-weight:400}
-.interp-tag{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:500;margin-top:.4rem}
-.info-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:1rem;margin-bottom:1rem}
-.info-cell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.6rem .75rem;text-align:center}
-.info-cell .val{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;color:var(--text);display:block}
-.info-cell .lbl{font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-top:1px}
+/* COMPARE CARDS */
+.cmprow{display:grid;grid-template-columns:1fr auto 1fr;gap:.75rem;margin-bottom:1.1rem;align-items:center}
+.cmpcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem;box-shadow:var(--sh);text-align:center}
+.cmpcard .clbl{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:.3rem}
+.cmpcard .cval{font-family:'DM Mono',monospace;font-size:1.9rem;font-weight:500;line-height:1;margin-bottom:.25rem}
+.cmpcard .cstate{font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.1em;color:var(--text3);margin-bottom:.25rem}
+.cmpcard .ctag{display:inline-block;padding:2px 9px;border-radius:12px;font-size:.68rem;font-weight:500}
+.cmpmid{text-align:center;padding:.5rem}
+.cmparrow{font-size:1.4rem;color:var(--text3);margin-bottom:.3rem}
+.cmpgain{font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:500}
+.cmpgainlbl{font-size:.65rem;color:var(--text3);margin-top:1px}
 
 /* QALY PANEL */
-.qaly-panel{background:var(--accent-light);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1.5rem;margin-bottom:1.25rem}
-.qaly-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.qaly-label{font-size:.82rem;font-weight:500;color:var(--text);white-space:nowrap}
-.qaly-input{width:90px;padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-family:'DM Mono',monospace;font-size:.9rem;font-weight:500;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s}
-.qaly-input:focus{border-color:var(--accent)}
-.qaly-result{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--accent);min-width:80px}
-.qaly-sub{font-size:.72rem;color:var(--text2);margin-top:2px}
+.qpanel{background:var(--accent-l);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.4rem;margin-bottom:1.1rem}
+.qrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:.5rem}
+.qlbl{font-size:.82rem;font-weight:500;color:var(--text);white-space:nowrap}
+.qinput{width:80px;padding:5px 9px;border:1px solid var(--border2);border-radius:6px;font-family:'DM Mono',monospace;font-size:.88rem;font-weight:500;color:var(--text);background:var(--surface);outline:none}
+.qinput:focus{border-color:var(--accent)}
+.qstats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.6rem}
+.qstat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.6rem .75rem;text-align:center}
+.qstat .sv{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;display:block}
+.qstat .sl{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-top:1px}
+.qnote{font-size:.67rem;color:var(--text3);margin-top:.5rem;line-height:1.5;font-style:italic}
 
 /* CHART CARDS */
-.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
-.chart-title{font-size:.875rem;font-weight:500;color:var(--text);margin-bottom:.2rem}
-.chart-sub{font-size:.72rem;color:var(--text3);margin-bottom:.75rem}
-.legend-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:.6rem}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--text2)}
-.legend-sw{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.2rem 1.4rem;box-shadow:var(--sh);margin-bottom:1.1rem}
+.cctitle{font-size:.85rem;font-weight:500;color:var(--text);margin-bottom:.15rem}
+.ccsub{font-size:.7rem;color:var(--text3);margin-bottom:.7rem}
+.legrow{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:.6rem}
+.legi{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--text2)}
+.legsw{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+/* DUAL CHART ROW */
+.dualrow{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-bottom:1.1rem}
+@media(max-width:700px){.dualrow{grid-template-columns:1fr}}
 
 /* DIM WEIGHTS */
-.dim-weight-bar{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.dim-weight-lbl{font-size:.75rem;color:var(--text2);width:130px;flex-shrink:0}
-.dim-weight-track{flex:1;height:7px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);overflow:hidden}
-.dim-weight-fill{height:100%;border-radius:4px;transition:width .35s cubic-bezier(.4,0,.2,1)}
-.dim-weight-val{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2);width:44px;text-align:right}
+.dwbar{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.dwlbl{font-size:.72rem;color:var(--text2);width:125px;flex-shrink:0}
+.dwtrack{flex:1;height:6px;background:var(--surface2);border-radius:3px;border:1px solid var(--border);overflow:hidden;position:relative}
+.dwfill{height:100%;border-radius:3px;transition:width .3s cubic-bezier(.4,0,.2,1)}
+.dwafter{position:absolute;top:0;left:0;height:100%;border-radius:3px;opacity:.45;transition:width .3s cubic-bezier(.4,0,.2,1)}
+.dwval{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--text2);min-width:80px;text-align:right}
 
-/* EXPORT BTNS */
-.btn{display:inline-flex;align-items:center;gap:5px;border-radius:7px;padding:7px 14px;font-family:'Inter',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;transition:all .12s}
-.btn-primary{background:var(--accent);color:#fff;border:none}
-.btn-primary:hover{opacity:.88}
-.btn-secondary{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-.btn-secondary:hover{background:var(--accent-light)}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem}
+/* AUC STATS */
+.aucstats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.75rem}
+.aucstat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.5rem .75rem;text-align:center}
+.aucstat .av{font-family:'DM Mono',monospace;font-size:.9rem;font-weight:500;display:block}
+.aucstat .al{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
 
-/* SOURCE NOTE */
-.source-note{font-size:.68rem;color:var(--text3);margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);line-height:1.6}
+/* BTNS */
+.btn{display:inline-flex;align-items:center;gap:5px;border-radius:7px;padding:6px 13px;font-family:'Inter',sans-serif;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .12s}
+.btn-p{background:var(--accent);color:#fff;border:none}.btn-p:hover{opacity:.88}
+.btn-s{background:transparent;color:var(--accent);border:1px solid var(--accent)}.btn-s:hover{background:var(--accent-l)}
+.btn-xs{padding:4px 9px;font-size:.7rem}
+.btnrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:.75rem}
 
-/* ---- COHORT TAB ---- */
-.cohort-layout{display:grid;grid-template-columns:300px 1fr;gap:1.25rem;align-items:start}
-@media(max-width:800px){.cohort-layout{grid-template-columns:1fr}}
-.form-group{margin-bottom:1rem}
-.form-label{font-size:.75rem;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;display:block}
-.form-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:.875rem;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s}
-.form-input:focus{border-color:var(--accent)}
-.upload-zone{border:1.5px dashed var(--border2);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all .15s;margin-top:.75rem}
-.upload-zone:hover{border-color:var(--accent);background:var(--accent-light)}
-.upload-zone input{display:none}
-.upload-icon{font-size:1.3rem;margin-bottom:.3rem}
-.upload-text{font-size:.8rem;font-weight:500;color:var(--text2)}
-.upload-sub{font-size:.7rem;color:var(--text3);margin-top:.2rem}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem}
-.stat-cell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;text-align:center}
-.stat-val{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--text);display:block}
-.stat-lbl{font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-top:2px}
-.cohort-placeholder{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:3rem 1.5rem;text-align:center;color:var(--text3);font-size:.85rem}
+.srcnote{font-size:.66rem;color:var(--text3);margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--border);line-height:1.6}
 
-/* ---- EXPLORER TAB ---- */
-.explorer-filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.75rem;margin-bottom:1rem;align-items:end}
-@media(max-width:700px){.explorer-filters{grid-template-columns:1fr}}
-.filter-label{font-size:.68rem;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;display:block}
-.explorer-count{font-size:.78rem;color:var(--text3);margin-bottom:.6rem}
-.explorer-count span{font-weight:600;color:var(--text)}
-.table-wrap{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-table{width:100%;border-collapse:collapse;font-size:.82rem}
+/* COHORT */
+.cholayout{display:grid;grid-template-columns:290px 1fr;gap:1.2rem;align-items:start}
+@media(max-width:800px){.cholayout{grid-template-columns:1fr}}
+.flbl{font-size:.72rem;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem;display:block}
+.finput{width:100%;padding:7px 11px;border:1px solid var(--border);border-radius:7px;font-family:'Inter',sans-serif;font-size:.85rem;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s}
+.finput:focus{border-color:var(--accent)}
+.fgrp{margin-bottom:.9rem}
+.upzone{border:1.5px dashed var(--border2);border-radius:9px;padding:1.1rem;text-align:center;cursor:pointer;transition:all .15s;margin-top:.7rem}
+.upzone:hover{border-color:var(--accent);background:var(--accent-l)}
+.upzone input{display:none}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.9rem}
+.scell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.65rem .9rem;text-align:center}
+.scell .sv{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;display:block}
+.scell .sl{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-top:2px}
+.chopl{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:3rem 1.5rem;text-align:center;color:var(--text3);font-size:.83rem}
+
+/* EXPLORER */
+.expfilters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.7rem;margin-bottom:.9rem;align-items:end}
+@media(max-width:700px){.expfilters{grid-template-columns:1fr}}
+.expcount{font-size:.76rem;color:var(--text3);margin-bottom:.55rem}
+.expcount span{font-weight:600;color:var(--text)}
+.twrap{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
 thead{background:var(--surface2)}
-th{padding:.65rem 1rem;text-align:left;font-size:.65rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
+th{padding:.6rem .9rem;text-align:left;font-size:.63rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
 th:hover{color:var(--text)}
-th .sort-arrow{margin-left:3px;opacity:.5}
-td{padding:.6rem 1rem;border-bottom:1px solid var(--border);color:var(--text)}
+td{padding:.55rem .9rem;border-bottom:1px solid var(--border);color:var(--text)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--surface2)}
-.profile-link{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--accent);font-weight:500;cursor:pointer;text-decoration:none}
-.profile-link:hover{text-decoration:underline}
-.health-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:500}
-.badge-full{background:var(--accent-light);color:var(--accent)}
-.badge-good{background:#eef5ea;color:#2a6a1a}
-.badge-mod{background:var(--warn-light);color:var(--warn)}
-.badge-poor{background:var(--accent2-light);color:var(--accent2)}
-.badge-wtd{background:#fce8e8;color:#a31a1a}
-body.dark .badge-good{background:#0d2e10;color:#5dba60}
-body.dark .badge-mod{background:#2e2000;color:#d4a030}
-.pagination{display:flex;align-items:center;gap:6px;padding:.75rem 1rem;background:var(--surface2);border-top:1px solid var(--border)}
-.page-btn{padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text2);font-size:.78rem;cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif}
-.page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
-.page-btn:disabled{opacity:.35;cursor:not-allowed}
-.page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.page-info{font-size:.75rem;color:var(--text3);margin:0 6px}
-.current-highlight td{background:var(--accent-light) !important}
-body.dark .current-highlight td{background:var(--accent-light) !important}
+.plink{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--accent);font-weight:500;cursor:pointer}
+.plink:hover{text-decoration:underline}
+.hbdg{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.66rem;font-weight:500}
+.b-full{background:var(--accent-l);color:var(--accent)}
+.b-good{background:#eef5ea;color:#2a6a1a}
+.b-mod{background:var(--warn-l);color:var(--warn)}
+.b-poor{background:var(--accent2-l);color:var(--accent2)}
+.b-wtd{background:#fce8e8;color:#a31a1a}
+body.dark .b-good{background:#0d2e10;color:#5dba60}
+body.dark .b-mod{background:#2e2000;color:#d4a030}
+.pgn{display:flex;align-items:center;gap:5px;padding:.65rem .9rem;background:var(--surface2);border-top:1px solid var(--border)}
+.pbtn{padding:3px 9px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text2);font-size:.75rem;cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif}
+.pbtn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.pbtn:disabled{opacity:.3;cursor:not-allowed}
+.pbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pinfo{font-size:.72rem;color:var(--text3);margin:0 5px}
+.cur-row td{background:var(--accent-l) !important}
 
-/* FOOTER */
-footer{border-top:1px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:.72rem;color:var(--text3);margin-top:2rem}
+footer{border-top:1px solid var(--border);padding:1.1rem 2rem;text-align:center;font-size:.7rem;color:var(--text3);margin-top:1.5rem}
 footer a{color:var(--accent);text-decoration:none}
 footer a:hover{text-decoration:underline}
-
-/* HIGHLIGHT */
-.highlight-state{background:var(--accent-light);border:1px solid var(--accent);border-radius:6px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:.78rem;color:var(--accent);font-weight:500;margin-left:auto}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-inner">
-    <div class="header-left">
-      <div class="header-badge">NICE HTA · EuroQol · UK TTO 2026</div>
+  <div class="hi">
+    <div>
+      <div class="hbadge">NICE HTA · EuroQol · UK TTO 2026</div>
       <h1>EQ-5D-5L UK Value Set Calculator</h1>
       <p>Official UK value set for NICE HTA submissions · Rowen et al. (2026) · 3,125 health state profiles</p>
     </div>
-    <button class="dark-toggle" onclick="toggleDark()" id="darkBtn">
-      <span id="darkIcon">☀️</span>
-      <div class="toggle-track" id="toggleTrack"><div class="toggle-thumb"></div></div>
-      <span id="darkLabel">LIGHT</span>
+    <button class="dtog" onclick="toggleDark()" id="dtogBtn">
+      <span id="dicon">☀️</span>
+      <div class="ttrack" id="ttrack"><div class="tthumb"></div></div>
+      <span id="dlbl">LIGHT</span>
     </button>
   </div>
 </div>
 
-<div class="nav-wrap">
-  <div class="nav-inner">
-    <button class="nav-tab active" onclick="switchTab('individual',this)">Individual Scoring</button>
-    <button class="nav-tab" onclick="switchTab('cohort',this)">Group / Cohort</button>
-    <button class="nav-tab" onclick="switchTab('explorer',this)">Value Set Explorer</button>
+<div class="navwrap">
+  <div class="navinner">
+    <button class="ntab active" onclick="switchTab('ind',this)">Individual Scoring</button>
+    <button class="ntab" onclick="switchTab('coh',this)">Group / Cohort</button>
+    <button class="ntab" onclick="switchTab('exp',this)">Value Set Explorer</button>
   </div>
 </div>
 
-<!-- ===================== TAB 1: INDIVIDUAL ===================== -->
 <div class="main">
-<div class="tab-panel active" id="tab-individual">
-  <div class="two-col">
+
+<!-- ===== TAB 1: INDIVIDUAL ===== -->
+<div class="tp active" id="tab-ind">
+  <div class="tcol">
 
     <!-- LEFT -->
     <div>
-      <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-title">Health State Profile</div>
-        <div id="dim-selectors"></div>
-        <div style="margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border)">
-          <div style="font-size:.68rem;color:var(--text3);margin-bottom:.35rem">LEVEL DESCRIPTORS</div>
-          <div style="font-size:.75rem;color:var(--text2);line-height:1.8">
-            <b style="font-weight:500;color:var(--text)">1</b> No problems &nbsp;
-            <b style="font-weight:500;color:var(--text)">2</b> Slight &nbsp;
-            <b style="font-weight:500;color:var(--text)">3</b> Moderate<br>
-            <b style="font-weight:500;color:var(--text)">4</b> Severe &nbsp;
-            <b style="font-weight:500;color:var(--text)">5</b> Extreme / Unable to do
-          </div>
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem">
+          <div class="ctitle" style="margin-bottom:0">Before / Current State</div>
+          <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text3)" id="tag-b">11111</span>
+        </div>
+        <div id="sel-before"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem">
+          <div class="ctitle" style="margin-bottom:0">After / Treatment State</div>
+          <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text3)" id="tag-a">11111</span>
+        </div>
+        <div id="sel-after"></div>
+        <div style="display:flex;gap:7px;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)">
+          <button class="btn btn-s btn-xs" onclick="copyToAfter()">↓ Copy from Before</button>
+          <button class="btn btn-s btn-xs" onclick="swapStates()">⇄ Swap States</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">Dimension Contributions</div>
-        <div id="dim-weights"></div>
-        <div class="source-note">Current severity level utility decrement per dimension.</div>
+        <div class="ctitle">Dimension Contributions</div>
+        <div id="dimw"></div>
+        <div class="srcnote">Bar shows Before (solid) and After (faint) decrement. Delta = change per dimension.</div>
       </div>
     </div>
 
     <!-- RIGHT -->
     <div>
-      <!-- Score -->
-      <div class="score-panel">
-        <div class="card-title" style="text-align:left">Utility Score</div>
-        <div class="gauge-wrap">
-          <canvas id="gaugeChart" width="200" height="108"></canvas>
-          <div class="gauge-value" id="gauge-value">1.000</div>
+      <!-- Before / After comparison cards -->
+      <div class="cmprow">
+        <div class="cmpcard">
+          <div class="clbl">Before</div>
+          <div class="cval" id="cv-before" style="color:#c84b1a">1.000</div>
+          <div class="cstate" id="cs-before">11111</div>
+          <div class="ctag" id="ct-before" style="background:var(--accent-l);color:var(--accent)">Full health</div>
         </div>
-        <div style="font-size:.72rem;color:var(--text3)">UK EQ-5D-5L Utility Value</div>
-        <div class="state-code"><span class="state-code-lbl">State</span><span id="state-digits">11111</span></div>
-        <div id="interp-tag" class="interp-tag" style="background:var(--accent-light);color:var(--accent)">Full health</div>
-        <div class="info-row">
-          <div class="info-cell"><span class="val" id="info-3l">0.883</span><span class="lbl">3L Mapped*</span></div>
-          <div class="info-cell"><span class="val" id="info-delta">+0.117</span><span class="lbl">Δ from 3L</span></div>
-          <div class="info-cell"><span class="val" id="info-pct">100%</span><span class="lbl">vs Full Health</span></div>
+        <div class="cmpmid">
+          <div class="cmparrow">→</div>
+          <div class="cmpgain" id="cg-util" style="color:var(--accent)">+0.000</div>
+          <div class="cmpgainlbl">utility change</div>
         </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="exportJSON()">↓ JSON</button>
-          <button class="btn btn-secondary" onclick="exportCSV()">↓ CSV</button>
+        <div class="cmpcard">
+          <div class="clbl">After</div>
+          <div class="cval" id="cv-after" style="color:#1a4a3c">1.000</div>
+          <div class="cstate" id="cs-after">11111</div>
+          <div class="ctag" id="ct-after" style="background:var(--accent-l);color:var(--accent)">Full health</div>
         </div>
       </div>
 
-      <!-- QALY Estimator -->
-      <div class="qaly-panel">
-        <div class="card-title" style="text-align:left;margin-bottom:.8rem">QALY Estimator</div>
-        <div class="qaly-row">
-          <div class="qaly-label">Remaining life years</div>
-          <input class="qaly-input" type="number" id="qaly-years" value="10" min="0.1" max="50" step="0.5" oninput="updateQALY()">
-          <div>
-            <div class="qaly-result" id="qaly-result">10.000</div>
-            <div class="qaly-sub">Expected QALYs</div>
+      <!-- QALY estimator -->
+      <div class="qpanel">
+        <div class="ctitle" style="margin-bottom:.7rem">QALY Estimator</div>
+        <div class="qrow">
+          <span class="qlbl">Time horizon (years)</span>
+          <input class="qinput" type="number" id="qyrs" value="10" min="0.5" max="50" step="0.5" oninput="update()">
+          <span style="font-size:.75rem;color:var(--text3)">Assumes constant utility over horizon</span>
+        </div>
+        <div class="qstats">
+          <div class="qstat"><span class="sv" id="q-before">10.000</span><span class="sl">Before QALYs</span></div>
+          <div class="qstat"><span class="sv" id="q-gain" style="color:var(--accent)">+0.000</span><span class="sl">QALY Gain</span></div>
+          <div class="qstat"><span class="sv" id="q-after">10.000</span><span class="sl">After QALYs</span></div>
+        </div>
+        <div class="qnote">For full HTA modelling with time-varying utility and discounting (3.5% per NICE guidance), consult a health economist. QALY gain = (U_after − U_before) × life years.</div>
+      </div>
+
+      <!-- AUC Chart -->
+      <div class="cc">
+        <div class="cctitle">Quality-Adjusted Life Years — Area Under the Curve</div>
+        <div class="ccsub">Filled areas represent accumulated QALYs over the time horizon under constant utility assumption</div>
+        <div class="legrow">
+          <div class="legi"><div class="legsw" style="background:rgba(200,75,26,0.5)"></div>Before QALYs</div>
+          <div class="legi"><div class="legsw" style="background:rgba(26,74,60,0.5)"></div>QALY Gain (treatment benefit)</div>
+          <div class="legi"><div class="legsw" style="background:rgba(150,150,150,0.2);border:1px dashed #aaa"></div>Remaining loss vs full health</div>
+        </div>
+        <div style="position:relative;height:190px"><canvas id="aucChart"></canvas></div>
+        <div class="aucstats">
+          <div class="aucstat"><span class="av" id="auc-b" style="color:#c84b1a">10.000</span><span class="al">Before QALYs</span></div>
+          <div class="aucstat"><span class="av" id="auc-g" style="color:#1a4a3c">+0.000</span><span class="al">QALY Gain</span></div>
+          <div class="aucstat"><span class="av" id="auc-a">10.000</span><span class="al">After QALYs</span></div>
+        </div>
+      </div>
+
+      <!-- Radar + History side by side -->
+      <div class="dualrow">
+        <div class="cc" style="margin-bottom:0">
+          <div class="cctitle">Health Profile — Dimension Severity</div>
+          <div class="ccsub">Larger shape = worse health. Inner = better.</div>
+          <div class="legrow">
+            <div class="legi"><div class="legsw" style="background:rgba(200,75,26,0.4)"></div>Before</div>
+            <div class="legi"><div class="legsw" style="background:rgba(26,74,60,0.4)"></div>After</div>
           </div>
-          <div>
-            <div class="qaly-result" id="qaly-lost" style="color:var(--accent2)">0.000</div>
-            <div class="qaly-sub">QALYs lost vs full health</div>
+          <div style="position:relative;height:200px"><canvas id="radarChart"></canvas></div>
+        </div>
+        <div class="cc" style="margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="cctitle">Utility Exploration History</div>
+              <div class="ccsub">Tracks each Before state you've explored</div>
+            </div>
+            <button class="btn btn-s btn-xs" onclick="clearHistory()" style="flex-shrink:0">Clear</button>
           </div>
+          <div style="position:relative;height:200px"><canvas id="histChart"></canvas></div>
         </div>
-        <div class="source-note" style="margin-top:.5rem;padding-top:.5rem">QALYs = Utility × Life Years. Assumes constant utility over the time horizon.</div>
       </div>
 
-      <!-- Comparison Chart -->
-      <div class="chart-card">
-        <div class="chart-title">5L vs 3L Value Set Comparison</div>
-        <div class="chart-sub">Utility across all severity levels for a uniform profile</div>
-        <div class="legend-row">
-          <div class="legend-item"><div class="legend-sw" style="background:#1a4a3c"></div>EQ-5D-5L UK (2026)</div>
-          <div class="legend-item"><div class="legend-sw" style="background:#c84b1a"></div>EQ-5D-3L UK (1997)</div>
+      <!-- 5L vs 3L -->
+      <div class="cc" style="margin-top:1.1rem">
+        <div class="cctitle">5L vs 3L Value Set — Utility Comparison</div>
+        <div class="ccsub">Uniform profiles across severity levels</div>
+        <div class="legrow">
+          <div class="legi"><div class="legsw" style="background:#1a4a3c"></div>EQ-5D-5L UK (2026)</div>
+          <div class="legi"><div class="legsw" style="background:#c84b1a"></div>EQ-5D-3L UK (1997)</div>
         </div>
-        <div style="position:relative;height:180px"><canvas id="compChart"></canvas></div>
+        <div style="position:relative;height:170px"><canvas id="compChart"></canvas></div>
+        <div class="srcnote">*3L mapped via Dolan (1997) with N3 interaction. Delta indicative only. Source: Rowen D et al. (2026) <i>Value in Health</i>. DOI: 10.1016/j.jval.2026.03.008</div>
       </div>
 
-      <!-- Dimension weight chart -->
-      <div class="chart-card">
-        <div class="chart-title">Dimension Weights at Level 5</div>
-        <div class="chart-sub">Maximum utility decrement — relative importance in the value set</div>
-        <div style="position:relative;height:200px"><canvas id="weightChart"></canvas></div>
-        <div class="source-note">*3L mapped using Dolan (1997). 5L level 5 → 3L level 3, levels 2–3 → 2, level 1 → 1. N3 interaction applied. Delta is indicative.<br>Source: Rowen D et al. (2026) <i>Value in Health</i>. DOI: 10.1016/j.jval.2026.03.008</div>
+      <!-- Dim weights -->
+      <div class="cc">
+        <div class="cctitle">Dimension Weights at Level 5 — Maximum Decrements</div>
+        <div class="ccsub">Relative importance of each dimension in the value set</div>
+        <div style="position:relative;height:190px"><canvas id="wtChart"></canvas></div>
+      </div>
+
+      <!-- Export -->
+      <div class="card">
+        <div class="ctitle">Export Results</div>
+        <div class="btnrow">
+          <button class="btn btn-p" onclick="exportJSON()">↓ JSON</button>
+          <button class="btn btn-s" onclick="exportCSV()">↓ CSV</button>
+        </div>
+        <div class="srcnote">Export includes both before/after states, utilities, QALY estimates, all decrements, and source citation.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===================== TAB 2: COHORT ===================== -->
-<div class="tab-panel" id="tab-cohort">
-  <div class="cohort-layout">
+<!-- ===== TAB 2: COHORT ===== -->
+<div class="tp" id="tab-coh">
+  <div class="cholayout">
     <div>
       <div class="card">
-        <div class="card-title">Data Configuration</div>
-        <div class="form-group">
-          <label class="form-label">Number of patients</label>
-          <input class="form-input" type="number" id="cohort-n" value="200" min="10" max="5000">
+        <div class="ctitle">Data Configuration</div>
+        <div class="fgrp"><label class="flbl">Number of patients</label><input class="finput" type="number" id="cn" value="200" min="10" max="5000"></div>
+        <div class="fgrp"><label class="flbl">Random seed</label><input class="finput" type="number" id="cs" value="2026"></div>
+        <button class="btn btn-p" style="width:100%;justify-content:center" onclick="genCohort()">Generate Simulated Data</button>
+        <div class="upzone" onclick="document.getElementById('csvup').click()">
+          <input type="file" id="csvup" accept=".csv" onchange="handleCSV(event)">
+          <div style="font-size:1.2rem;margin-bottom:.25rem">↑</div>
+          <div style="font-size:.78rem;font-weight:500;color:var(--text2)">Upload CSV</div>
+          <div style="font-size:.68rem;color:var(--text3);margin-top:.15rem">Columns: MO, SC, UA, PD, AD (integers 1–5)</div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Random seed</label>
-          <input class="form-input" type="number" id="cohort-seed" value="2026">
-        </div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="generateCohort()">Generate Simulated Data</button>
-        <div class="upload-zone" onclick="document.getElementById('csv-upload').click()">
-          <input type="file" id="csv-upload" accept=".csv" onchange="handleCSV(event)">
-          <div class="upload-icon">↑</div>
-          <div class="upload-text">Upload CSV</div>
-          <div class="upload-sub">Columns: MO, SC, UA, PD, AD (integers 1–5)</div>
-        </div>
-        <div id="cohort-export-row" style="display:none;margin-top:.75rem">
-          <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="exportCohortCSV()">↓ Export Results CSV</button>
+        <div id="coh-exprow" style="display:none;margin-top:.75rem">
+          <button class="btn btn-s" style="width:100%;justify-content:center" onclick="expCohortCSV()">↓ Export Results CSV</button>
         </div>
       </div>
     </div>
-
-    <div id="cohort-results">
-      <div class="cohort-placeholder">Generate or upload data to see summary statistics.</div>
-    </div>
+    <div id="coh-results"><div class="chopl">Generate or upload data to see summary statistics and charts.</div></div>
   </div>
 </div>
 
-<!-- ===================== TAB 3: EXPLORER ===================== -->
-<div class="tab-panel" id="tab-explorer">
-  <div class="card" style="margin-bottom:.75rem">
-    <div style="font-size:.75rem;color:var(--text3);margin-bottom:.75rem">3,125 health state profiles · EQ-5D-5L UK Value Set (Rowen et al. 2026) · Range: −0.567 to 1.000</div>
-    <div class="explorer-filters">
-      <div>
-        <label class="filter-label">Search profile</label>
-        <input class="form-input" type="text" id="exp-search" placeholder="e.g. 11111, 33333..." oninput="filterExplorer()">
-      </div>
-      <div>
-        <label class="filter-label">Min index</label>
-        <input class="form-input" type="number" id="exp-min" placeholder="e.g. −0.5" step="0.01" oninput="filterExplorer()">
-      </div>
-      <div>
-        <label class="filter-label">Max index</label>
-        <input class="form-input" type="number" id="exp-max" placeholder="e.g. 1.0" step="0.01" oninput="filterExplorer()">
-      </div>
+<!-- ===== TAB 3: EXPLORER ===== -->
+<div class="tp" id="tab-exp">
+  <div class="card" style="margin-bottom:.7rem">
+    <div style="font-size:.72rem;color:var(--text3);margin-bottom:.7rem">3,125 health state profiles · EQ-5D-5L UK Value Set (Rowen et al. 2026) · Range: −0.567 to 1.000</div>
+    <div class="expfilters">
+      <div><label class="flbl" style="font-size:.65rem">Search profile</label><input class="finput" type="text" id="esrch" placeholder="e.g. 11111, 333..." oninput="filterExp()"></div>
+      <div><label class="flbl" style="font-size:.65rem">Min index</label><input class="finput" type="number" id="emin" placeholder="e.g. −0.5" step="0.01" oninput="filterExp()"></div>
+      <div><label class="flbl" style="font-size:.65rem">Max index</label><input class="finput" type="number" id="emax" placeholder="e.g. 1.0" step="0.01" oninput="filterExp()"></div>
     </div>
-    <div class="explorer-count" id="exp-count"><span>3,125</span> profiles found</div>
-    <div class="table-wrap">
+    <div class="expcount" id="ecnt"><span>3,125</span> profiles found</div>
+    <div class="twrap">
       <table>
-        <thead>
-          <tr>
-            <th onclick="sortExplorer('profile')">Profile <span class="sort-arrow" id="sort-profile">↕</span></th>
-            <th onclick="sortExplorer('MO')">MO <span class="sort-arrow" id="sort-MO">↕</span></th>
-            <th onclick="sortExplorer('SC')">SC <span class="sort-arrow" id="sort-SC">↕</span></th>
-            <th onclick="sortExplorer('UA')">UA <span class="sort-arrow" id="sort-UA">↕</span></th>
-            <th onclick="sortExplorer('PD')">PD <span class="sort-arrow" id="sort-PD">↕</span></th>
-            <th onclick="sortExplorer('AD')">AD <span class="sort-arrow" id="sort-AD">↕</span></th>
-            <th onclick="sortExplorer('utility')">EQ-5D Index <span class="sort-arrow" id="sort-utility">↕</span></th>
-            <th>Health State</th>
-          </tr>
-        </thead>
-        <tbody id="exp-tbody"></tbody>
+        <thead><tr>
+          <th onclick="sortExp('profile')">Profile <span id="sa-profile">↕</span></th>
+          <th onclick="sortExp('MO')">MO <span id="sa-MO">↕</span></th>
+          <th onclick="sortExp('SC')">SC <span id="sa-SC">↕</span></th>
+          <th onclick="sortExp('UA')">UA <span id="sa-UA">↕</span></th>
+          <th onclick="sortExp('PD')">PD <span id="sa-PD">↕</span></th>
+          <th onclick="sortExp('AD')">AD <span id="sa-AD">↕</span></th>
+          <th onclick="sortExp('utility')">EQ-5D Index <span id="sa-utility">↕</span></th>
+          <th>Health State</th>
+        </tr></thead>
+        <tbody id="etbody"></tbody>
       </table>
-      <div class="pagination" id="exp-pagination"></div>
+      <div class="pgn" id="epgn"></div>
     </div>
   </div>
 </div>
@@ -382,96 +407,81 @@ footer a:hover{text-decoration:underline}
 </footer>
 
 <script>
-// ── COEFFICIENTS ──────────────────────────────────────────────
-const COEFF = {
-  MO:[0,0.032,0.058,0.179,0.279],
-  SC:[0,0.038,0.060,0.162,0.206],
-  UA:[0,0.049,0.086,0.184,0.212],
-  PD:[0,0.056,0.066,0.371,0.479],
-  AD:[0,0.041,0.126,0.313,0.391]
-};
-const DIMS = ['MO','SC','UA','PD','AD'];
-const DIM_LABELS = {MO:'Mobility',SC:'Self-Care',UA:'Usual Activities',PD:'Pain / Discomfort',AD:'Anxiety / Depression'};
-const DIM_COLORS = {MO:'#1a4a3c',SC:'#1a3a5c',UA:'#3d1a6e',PD:'#c84b1a',AD:'#7a4d00'};
-const LEVEL_LABELS = ['No problems','Slight','Moderate','Severe','Extreme'];
-const EQ3L = {MO:[0,0.069,0.314],SC:[0,0.104,0.214],UA:[0,0.036,0.094],PD:[0,0.123,0.386],AD:[0,0.071,0.236],N3:0.269,C:0.081};
+// ── CONSTANTS ─────────────────────────────────────────────────
+const C={MO:[0,.032,.058,.179,.279],SC:[0,.038,.06,.162,.206],UA:[0,.049,.086,.184,.212],PD:[0,.056,.066,.371,.479],AD:[0,.041,.126,.313,.391]};
+const DIMS=['MO','SC','UA','PD','AD'];
+const DLBLS={MO:'Mobility',SC:'Self-Care',UA:'Usual Activities',PD:'Pain / Discomfort',AD:'Anxiety / Depression'};
+const DCOLS={MO:'#1a4a3c',SC:'#1a3a5c',UA:'#3d1a6e',PD:'#c84b1a',AD:'#7a4d00'};
+const LLBLS=['No problems','Slight','Moderate','Severe','Extreme'];
+const E3={MO:[0,.069,.314],SC:[0,.104,.214],UA:[0,.036,.094],PD:[0,.123,.386],AD:[0,.071,.236],N3:.269,K:.081};
 
-let levels = {MO:1,SC:1,UA:1,PD:1,AD:1};
-let isDark = false;
+// ── STATE ─────────────────────────────────────────────────────
+let lb={MO:1,SC:1,UA:1,PD:1,AD:1}; // before
+let la={MO:1,SC:1,UA:1,PD:1,AD:1}; // after
+let isDark=false;
+let history=[{state:'11111',u:1.0}];
+const MAX_HIST=20;
 
-// ── UTILITY CALC ──────────────────────────────────────────────
-function calc5L(lvls){
-  let d=0; DIMS.forEach(k=>d+=COEFF[k][lvls[k]-1]);
-  return Math.max(-1,Math.min(1,1-d));
+// ── CALC ──────────────────────────────────────────────────────
+const u5=(lv)=>Math.max(-1,Math.min(1,1-DIMS.reduce((s,k)=>s+C[k][lv[k]-1],0)));
+const m3=(l)=>l<=1?1:l<=3?2:3;
+function u3(lv){let d=E3.K;DIMS.forEach(k=>d+=E3[k][m3(lv[k])-1]);if(DIMS.some(k=>m3(lv[k])===3))d+=E3.N3;return Math.max(-1,Math.min(1,1-d));}
+function interp(u){
+  if(u>=.95)return{t:'Full / near-full health',bg:'var(--accent-l)',c:'var(--accent)'};
+  if(u>=.75)return{t:'Good health',bg:'#eef5ea',c:'#2a6a1a'};
+  if(u>=.50)return{t:'Moderate health',bg:'var(--warn-l)',c:'var(--warn)'};
+  if(u>=.20)return{t:'Poor health',bg:'var(--accent2-l)',c:'var(--accent2)'};
+  if(u>=0) return{t:'Very poor health',bg:'#fce8e8',c:'#a31a1a'};
+  return{t:'Worse than dead',bg:'#f5e0e0',c:'#7a0000'};
 }
-function map3L(l){return l<=1?1:l<=3?2:3}
-function calc3L(lvls){
-  let d=EQ3L.C;
-  DIMS.forEach(k=>d+=EQ3L[k][map3L(lvls[k])-1]);
-  if(DIMS.some(k=>map3L(lvls[k])===3))d+=EQ3L.N3;
-  return Math.max(-1,Math.min(1,1-d));
-}
-function getInterp(u){
-  if(u>=0.95)return{text:'Full / near-full health',bg:'var(--accent-light)',col:'var(--accent)'};
-  if(u>=0.75)return{text:'Good health',bg:'#eef5ea',col:'#2a6a1a'};
-  if(u>=0.50)return{text:'Moderate health',bg:'var(--warn-light)',col:'var(--warn)'};
-  if(u>=0.20)return{text:'Poor health',bg:'var(--accent2-light)',col:'var(--accent2)'};
-  if(u>=0)return{text:'Very poor health',bg:'#fce8e8',col:'#a31a1a'};
-  return{text:'Worse than dead',bg:'#f5e0e0',col:'#7a0000'};
-}
-function getBadgeClass(u){
-  if(u>=0.85)return'badge-full';
-  if(u>=0.65)return'badge-good';
-  if(u>=0.35)return'badge-mod';
-  if(u>=0)return'badge-poor';
-  return'badge-wtd';
-}
-function getBadgeText(u){
-  if(u>=0.85)return'Good Health';
-  if(u>=0.65)return'Moderate Health';
-  if(u>=0.35)return'Poor Health';
-  if(u>=0)return'Very Poor Health';
-  return'Worse than Dead';
-}
+function bdg(u){if(u>=.85)return'b-full';if(u>=.65)return'b-good';if(u>=.35)return'b-mod';if(u>=0)return'b-poor';return'b-wtd';}
+function bdgt(u){if(u>=.85)return'Good Health';if(u>=.65)return'Moderate Health';if(u>=.35)return'Poor Health';if(u>=0)return'Very Poor Health';return'Worse than Dead';}
 
 // ── DARK MODE ─────────────────────────────────────────────────
 function toggleDark(){
   isDark=!isDark;
   document.body.classList.toggle('dark',isDark);
-  document.getElementById('toggleTrack').classList.toggle('on',isDark);
-  document.getElementById('darkLabel').textContent=isDark?'DARK':'LIGHT';
-  document.getElementById('darkIcon').textContent=isDark?'🌙':'☀️';
+  document.getElementById('ttrack').classList.toggle('on',isDark);
+  document.getElementById('dlbl').textContent=isDark?'DARK':'LIGHT';
+  document.getElementById('dicon').textContent=isDark?'🌙':'☀️';
 }
 
-// ── TAB SWITCHING ─────────────────────────────────────────────
+// ── TAB SWITCH ────────────────────────────────────────────────
 function switchTab(id,el){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   el.classList.add('active');
-  if(id==='explorer'&&!explorerBuilt)buildExplorer();
+  if(id==='exp'&&!expBuilt)buildExp();
 }
 
 // ── BUILD SELECTORS ───────────────────────────────────────────
-function buildSelectors(){
-  const wrap=document.getElementById('dim-selectors');
-  DIMS.forEach(key=>{
-    const grp=document.createElement('div');
-    grp.className='dim-group';
-    grp.innerHTML=`<div class="dim-label"><div class="dim-dot" style="background:${DIM_COLORS[key]}"></div>${DIM_LABELS[key]}</div><div class="level-buttons" id="btns-${key}"></div>`;
-    wrap.appendChild(grp);
-    const row=grp.querySelector('#btns-'+key);
+function buildSel(containerId,lvObj,prefix){
+  const wrap=document.getElementById(containerId);wrap.innerHTML='';
+  DIMS.forEach(k=>{
+    const g=document.createElement('div');g.className='dg';
+    g.innerHTML=`<div class="dlabel"><div class="ddot" style="background:${DCOLS[k]}"></div>${DLBLS[k]}</div><div class="lbtns" id="${prefix}-${k}"></div>`;
+    wrap.appendChild(g);
+    const row=g.querySelector(`#${prefix}-${k}`);
     for(let l=1;l<=5;l++){
       const btn=document.createElement('button');
-      btn.className='level-btn'+(l===1?' active':'');
-      btn.innerHTML=`<span class="lnum">${l}</span><span class="ltxt">${LEVEL_LABELS[l-1]}</span>`;
-      if(l===1)btn.style.cssText=`background:${DIM_COLORS[key]};color:#fff;border-color:${DIM_COLORS[key]}`;
+      btn.className='lbtn'+(l===lvObj[k]?' active':'');
+      btn.innerHTML=`<span class="ln">${l}</span><span class="lt">${LLBLS[l-1]}</span>`;
+      if(l===lvObj[k])btn.style.cssText=`background:${DCOLS[k]};color:#fff;border-color:${DCOLS[k]}`;
       btn.onclick=()=>{
-        levels[key]=l;
-        row.querySelectorAll('.level-btn').forEach((b,i)=>{
+        lvObj[k]=l;
+        row.querySelectorAll('.lbtn').forEach((b,i)=>{
           b.classList.toggle('active',i===l-1);
-          b.style.cssText=(i===l-1)?`background:${DIM_COLORS[key]};color:#fff;border-color:${DIM_COLORS[key]}`:'';
+          b.style.cssText=(i===l-1)?`background:${DCOLS[k]};color:#fff;border-color:${DCOLS[k]}`:'';
         });
+        if(prefix==='b'){
+          const sc=DIMS.map(dk=>lb[dk]).join('');
+          const prev=history[history.length-1];
+          if(!prev||prev.state!==sc){
+            history.push({state:sc,u:parseFloat(u5(lb).toFixed(4))});
+            if(history.length>MAX_HIST)history.shift();
+          }
+        }
         update();
       };
       row.appendChild(btn);
@@ -479,379 +489,370 @@ function buildSelectors(){
   });
 }
 
-// ── GAUGE ─────────────────────────────────────────────────────
-let gaugeChart,compChart,weightChart;
-function initGauge(){
-  const ctx=document.getElementById('gaugeChart').getContext('2d');
-  gaugeChart=new Chart(ctx,{
-    type:'doughnut',
-    data:{datasets:[{data:[1,0,1],backgroundColor:['#1a4a3c','#e2e0d8','transparent'],borderWidth:0,circumference:180,rotation:270}]},
-    options:{responsive:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:350,easing:'easeInOutQuart'}}
+function refreshBtns(lvObj,prefix){
+  DIMS.forEach(k=>{
+    const row=document.getElementById(`${prefix}-${k}`);if(!row)return;
+    row.querySelectorAll('.lbtn').forEach((b,i)=>{
+      const l=i+1;b.classList.toggle('active',l===lvObj[k]);
+      b.style.cssText=(l===lvObj[k])?`background:${DCOLS[k]};color:#fff;border-color:${DCOLS[k]}`:'';
+    });
   });
 }
-function initCompChart(){
-  const ctx=document.getElementById('compChart').getContext('2d');
-  compChart=new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:['Level 1','Level 2','Level 3','Level 4','Level 5'],
-      datasets:[
-        {label:'EQ-5D-5L',data:[],backgroundColor:'#1a4a3c',borderRadius:4,borderSkipped:false},
-        {label:'EQ-5D-3L',data:[],backgroundColor:'#c84b1a',borderRadius:4,borderSkipped:false}
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Utility: ${c.parsed.y.toFixed(3)}`}}},
+
+function copyToAfter(){Object.assign(la,lb);refreshBtns(la,'a');update();}
+function swapStates(){const tmp={...lb};Object.assign(lb,la);Object.assign(la,tmp);refreshBtns(lb,'b');refreshBtns(la,'a');update();}
+
+// ── CHARTS ────────────────────────────────────────────────────
+let aucChart,radarChart,histChart,compChart,wtChart,cohChart,cohDimChart;
+
+function initAUC(){
+  const ctx=document.getElementById('aucChart').getContext('2d');
+  aucChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:[0,10],datasets:[
+      {label:'Full health ref',data:[1,1],borderColor:'rgba(120,120,120,0.3)',borderDash:[5,5],fill:false,pointRadius:0,tension:0,order:3},
+      {label:'After',data:[1,1],borderColor:'#1a4a3c',backgroundColor:'rgba(26,74,60,0.22)',fill:'-1',pointRadius:0,tension:0,borderWidth:2,order:1},
+      {label:'Before',data:[1,1],borderColor:'#c84b1a',backgroundColor:'rgba(200,75,26,0.22)',fill:'origin',pointRadius:0,tension:0,borderWidth:2,order:2}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(3)}`}}},
       scales:{
-        x:{grid:{display:false},ticks:{font:{size:10},color:'#8a877e'}},
-        y:{min:-1,max:1,grid:{color:'rgba(128,128,128,0.08)'},ticks:{font:{size:10},color:'#8a877e',stepSize:0.5},border:{display:false}}
+        x:{title:{display:true,text:'Years',font:{size:10},color:'#8a877e'},grid:{color:'rgba(128,128,128,0.06)'},ticks:{font:{size:10},color:'#8a877e'}},
+        y:{min:0,max:1.05,grid:{color:'rgba(128,128,128,0.06)'},ticks:{font:{size:10},color:'#8a877e',stepSize:.25},border:{display:false}}
       }}
   });
 }
-function initWeightChart(){
-  const ctx=document.getElementById('weightChart').getContext('2d');
-  weightChart=new Chart(ctx,{
-    type:'bar',
+
+function initRadar(){
+  const ctx=document.getElementById('radarChart').getContext('2d');
+  radarChart=new Chart(ctx,{
+    type:'radar',
     data:{
-      labels:['Mobility','Self-Care','Usual Activities','Pain/Discomfort','Anxiety/Dep.'],
-      datasets:[{data:[0.279,0.206,0.212,0.479,0.391],backgroundColor:['#1a4a3c','#1a3a5c','#3d1a6e','#c84b1a','#7a4d00'],borderRadius:4,borderSkipped:false}]
+      labels:['Mobility','Self-Care','Usual\nActivities','Pain /\nDiscomfort','Anxiety /\nDepression'],
+      datasets:[
+        {label:'Before',data:[1,1,1,1,1],borderColor:'#c84b1a',backgroundColor:'rgba(200,75,26,0.15)',pointRadius:4,borderWidth:2,pointBackgroundColor:'#c84b1a'},
+        {label:'After',data:[1,1,1,1,1],borderColor:'#1a4a3c',backgroundColor:'rgba(26,74,60,0.15)',pointRadius:4,borderWidth:2,pointBackgroundColor:'#1a4a3c'}
+      ]
     },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{r:{min:0,max:5,ticks:{stepSize:1,font:{size:9},color:'#8a877e',backdropColor:'transparent'},
+        pointLabels:{font:{size:9},color:'#5a5750'},
+        grid:{color:'rgba(128,128,128,0.15)'},
+        angleLines:{color:'rgba(128,128,128,0.15)'}}}}
+  });
+}
+
+function initHist(){
+  const ctx=document.getElementById('histChart').getContext('2d');
+  histChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:['11111'],datasets:[{
+      label:'Before utility',data:[1],
+      borderColor:'#1a3a5c',backgroundColor:'rgba(26,58,92,0.08)',
+      fill:true,pointRadius:4,pointHoverRadius:6,tension:.3,borderWidth:2,
+      pointBackgroundColor:'#1a3a5c'
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Utility: ${c.parsed.y.toFixed(3)}`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:9},color:'#8a877e',maxRotation:45,maxTicksLimit:8}},
+        y:{min:-.2,max:1.05,grid:{color:'rgba(128,128,128,0.06)'},ticks:{font:{size:10},color:'#8a877e'},border:{display:false}}
+      }}
+  });
+}
+
+function initComp(){
+  const ctx=document.getElementById('compChart').getContext('2d');
+  compChart=new Chart(ctx,{
+    type:'bar',
+    data:{labels:['Level 1','Level 2','Level 3','Level 4','Level 5'],datasets:[
+      {label:'5L',data:[],backgroundColor:'#1a4a3c',borderRadius:3,borderSkipped:false},
+      {label:'3L',data:[],backgroundColor:'#c84b1a',borderRadius:3,borderSkipped:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Utility: ${c.parsed.y.toFixed(3)}`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#8a877e'}},
+        y:{min:-1,max:1,grid:{color:'rgba(128,128,128,0.06)'},ticks:{font:{size:10},color:'#8a877e',stepSize:.5},border:{display:false}}}}
+  });
+}
+
+function initWt(){
+  const ctx=document.getElementById('wtChart').getContext('2d');
+  wtChart=new Chart(ctx,{
+    type:'bar',
+    data:{labels:['Mobility','Self-Care','Usual Activities','Pain/Discomfort','Anxiety/Dep.'],
+      datasets:[{data:[.279,.206,.212,.479,.391],backgroundColor:['#1a4a3c','#1a3a5c','#3d1a6e','#c84b1a','#7a4d00'],borderRadius:3,borderSkipped:false}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Decrement: ${c.parsed.x.toFixed(3)}`}}},
-      scales:{x:{min:0,max:0.55,grid:{color:'rgba(128,128,128,0.08)'},ticks:{font:{size:10},color:'#8a877e'},border:{display:false}},
+      scales:{x:{min:0,max:.55,grid:{color:'rgba(128,128,128,0.06)'},ticks:{font:{size:10},color:'#8a877e'},border:{display:false}},
         y:{grid:{display:false},ticks:{font:{size:10},color:'#5a5750'}}}}
   });
 }
 
 // ── UPDATE ────────────────────────────────────────────────────
 function update(){
-  const u5=calc5L(levels);
-  const u3=calc3L(levels);
-  const delta=u5-u3;
+  const ub=u5(lb),ua_v=u5(la);
+  const yrs=parseFloat(document.getElementById('qyrs').value)||10;
+  const gain=ua_v-ub;
+  const qb=ub*yrs,qa=ua_v*yrs,qg=gain*yrs;
 
-  document.getElementById('gauge-value').textContent=u5.toFixed(3);
-  const fill=Math.max(0,(u5+1)/2);
-  const col=u5>=0.75?'#1a4a3c':u5>=0.4?'#c84b1a':'#a31a1a';
-  gaugeChart.data.datasets[0].backgroundColor=[col,'#e2e0d8','transparent'];
-  gaugeChart.data.datasets[0].data=[fill,1-fill,1];
-  gaugeChart.update();
-  document.getElementById('gauge-value').style.color=col;
+  // state codes
+  const stb=DIMS.map(k=>lb[k]).join('');
+  const sta=DIMS.map(k=>la[k]).join('');
+  document.getElementById('tag-b').textContent=stb;
+  document.getElementById('tag-a').textContent=sta;
 
-  document.getElementById('state-digits').textContent=DIMS.map(k=>levels[k]).join('');
-  const interp=getInterp(u5);
-  const tag=document.getElementById('interp-tag');
-  tag.textContent=interp.text;tag.style.background=interp.bg;tag.style.color=interp.col;
+  // compare cards
+  document.getElementById('cv-before').textContent=ub.toFixed(3);
+  document.getElementById('cs-before').textContent=stb;
+  const ib=interp(ub);
+  document.getElementById('ct-before').textContent=ib.t;
+  document.getElementById('ct-before').style.cssText=`background:${ib.bg};color:${ib.c}`;
 
-  document.getElementById('info-3l').textContent=u3.toFixed(3);
-  const dEl=document.getElementById('info-delta');
-  dEl.textContent=(delta>=0?'+':'')+delta.toFixed(3);
-  dEl.style.color=delta>=0?'var(--accent)':'var(--accent2)';
-  document.getElementById('info-pct').textContent=Math.max(0,Math.round(u5*100))+'%';
+  document.getElementById('cv-after').textContent=ua_v.toFixed(3);
+  document.getElementById('cs-after').textContent=sta;
+  const ia=interp(ua_v);
+  document.getElementById('ct-after').textContent=ia.t;
+  document.getElementById('ct-after').style.cssText=`background:${ia.bg};color:${ia.c}`;
 
-  updateDimWeights();
-  updateCompChart();
-  updateQALY();
+  const gu=document.getElementById('cg-util');
+  gu.textContent=(gain>=0?'+':'')+gain.toFixed(3);
+  gu.style.color=gain>=0?'var(--accent)':'var(--accent2)';
 
-  // sync explorer highlight
-  if(explorerBuilt)renderExplorerPage();
-}
+  // QALY stats
+  document.getElementById('q-before').textContent=qb.toFixed(3);
+  document.getElementById('q-after').textContent=qa.toFixed(3);
+  const qgel=document.getElementById('q-gain');
+  qgel.textContent=(qg>=0?'+':'')+qg.toFixed(3);
+  qgel.style.color=qg>=0?'var(--accent)':'var(--accent2)';
 
-function updateDimWeights(){
-  const wrap=document.getElementById('dim-weights');wrap.innerHTML='';
-  const maxD=0.479;
-  DIMS.forEach(k=>{
-    const d=COEFF[k][levels[k]-1];
-    const pct=(d/maxD*100).toFixed(1);
-    const row=document.createElement('div');row.className='dim-weight-bar';
-    row.innerHTML=`<div class="dim-weight-lbl">${DIM_LABELS[k]} <span style="color:var(--text3);font-size:.65rem">(L${levels[k]})</span></div>
-      <div class="dim-weight-track"><div class="dim-weight-fill" style="width:${pct}%;background:${DIM_COLORS[k]}"></div></div>
-      <div class="dim-weight-val">${d.toFixed(3)}</div>`;
-    wrap.appendChild(row);
-  });
-}
+  // AUC stats
+  document.getElementById('auc-b').textContent=qb.toFixed(3);
+  document.getElementById('auc-a').textContent=qa.toFixed(3);
+  const agel=document.getElementById('auc-g');
+  agel.textContent=(qg>=0?'+':'')+qg.toFixed(3);
 
-function updateCompChart(){
-  const v5=[1,2,3,4,5].map(l=>{let d=0;DIMS.forEach(k=>d+=COEFF[k][l-1]);return Math.max(-1,Math.min(1,1-d));});
-  const v3=[1,2,3].map(l=>{let d=EQ3L.C;DIMS.forEach(k=>d+=EQ3L[k][l-1]);if(l===3)d+=EQ3L.N3;return Math.max(-1,Math.min(1,1-d));});
+  // AUC chart
+  const xlabels=Array.from({length:Math.round(yrs)+1},(_,i)=>i);
+  aucChart.data.labels=xlabels;
+  aucChart.data.datasets[0].data=xlabels.map(()=>1);
+  aucChart.data.datasets[1].data=xlabels.map(()=>ua_v);
+  aucChart.data.datasets[2].data=xlabels.map(()=>ub);
+  aucChart.update('none');
+
+  // Radar
+  radarChart.data.datasets[0].data=DIMS.map(k=>lb[k]);
+  radarChart.data.datasets[1].data=DIMS.map(k=>la[k]);
+  radarChart.update('none');
+
+  // History
+  histChart.data.labels=history.map(h=>h.state);
+  histChart.data.datasets[0].data=history.map(h=>h.u);
+  histChart.update('none');
+
+  // Comparison chart
+  const v5=[1,2,3,4,5].map(l=>{let d=0;DIMS.forEach(k=>d+=C[k][l-1]);return Math.max(-1,Math.min(1,1-d));});
+  const v3=[1,2,3].map(l=>{let d=E3.K;DIMS.forEach(k=>d+=E3[k][l-1]);if(l===3)d+=E3.N3;return Math.max(-1,Math.min(1,1-d));});
   compChart.data.datasets[0].data=v5;
   compChart.data.datasets[1].data=[v3[0],v3[0],v3[1],v3[2],v3[2]];
   compChart.update('none');
+
+  // Dim weights
+  const wrap=document.getElementById('dimw');wrap.innerHTML='';
+  const maxD=.479;
+  DIMS.forEach(k=>{
+    const db=C[k][lb[k]-1],da=C[k][la[k]-1];
+    const pb=(db/maxD*100).toFixed(1),pa=(da/maxD*100).toFixed(1);
+    const delta=da-db;
+    const row=document.createElement('div');row.className='dwbar';
+    row.innerHTML=`<div class="dwlbl">${DLBLS[k]} <span style="color:var(--text3);font-size:.62rem">(B:${lb[k]} A:${la[k]})</span></div>
+      <div class="dwtrack">
+        <div class="dwfill" style="width:${pb}%;background:${DCOLS[k]}"></div>
+        <div class="dwafter" style="width:${pa}%;background:${DCOLS[k]}"></div>
+      </div>
+      <div class="dwval">${db.toFixed(3)} <span style="color:${delta<=0?'var(--accent)':'var(--accent2)';font-size:.6rem">${delta===0?'–':(delta<0?'↓':'↑')+Math.abs(delta).toFixed(3)}</span></div>`;
+    wrap.appendChild(row);
+  });
+
+  // Explorer highlight sync
+  if(expBuilt)renderExpPage();
 }
 
-function updateQALY(){
-  const u=calc5L(levels);
-  const yrs=parseFloat(document.getElementById('qaly-years').value)||10;
-  document.getElementById('qaly-result').textContent=(u*yrs).toFixed(3);
-  document.getElementById('qaly-lost').textContent=((1-u)*yrs).toFixed(3);
+function clearHistory(){
+  history=[{state:DIMS.map(k=>lb[k]).join(''),u:parseFloat(u5(lb).toFixed(4))}];
+  update();
 }
 
-// ── EXPORT INDIVIDUAL ─────────────────────────────────────────
+// ── EXPORT ────────────────────────────────────────────────────
 function exportJSON(){
-  const u5=calc5L(levels),u3=calc3L(levels);
-  const obj={generated:new Date().toISOString(),source:'Rowen et al. (2026) Value in Health',health_state:DIMS.map(k=>levels[k]).join(''),
-    levels:Object.fromEntries(DIMS.map(k=>[DIM_LABELS[k].toLowerCase().replace(/\s*\/\s*/g,'_').replace(/\s+/g,'_'),levels[k]])),
-    utility_5L:parseFloat(u5.toFixed(4)),utility_3L_mapped:parseFloat(u3.toFixed(4)),
-    qaly_estimate:parseFloat((u5*(parseFloat(document.getElementById('qaly-years').value)||10)).toFixed(4)),
-    decrements:Object.fromEntries(DIMS.map(k=>[k,COEFF[k][levels[k]-1]])),doi:'10.1016/j.jval.2026.03.008'};
+  const ub=u5(lb),ua_v=u5(la),yrs=parseFloat(document.getElementById('qyrs').value)||10;
+  const obj={generated:new Date().toISOString(),source:'Rowen et al. (2026) Value in Health',doi:'10.1016/j.jval.2026.03.008',
+    before:{state:DIMS.map(k=>lb[k]).join(''),levels:Object.fromEntries(DIMS.map(k=>[k,lb[k]])),utility:parseFloat(ub.toFixed(4)),qalys:parseFloat((ub*yrs).toFixed(4))},
+    after:{state:DIMS.map(k=>la[k]).join(''),levels:Object.fromEntries(DIMS.map(k=>[k,la[k]])),utility:parseFloat(ua_v.toFixed(4)),qalys:parseFloat((ua_v*yrs).toFixed(4))},
+    time_horizon_years:yrs,qaly_gain:parseFloat(((ua_v-ub)*yrs).toFixed(4)),utility_gain:parseFloat((ua_v-ub).toFixed(4)),
+    model:'Random Effects Tobit no constant'};
   const b=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`eq5d5l_${obj.health_state}.json`;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`eq5d5l_${obj.before.state}_to_${obj.after.state}.json`;a.click();
 }
 function exportCSV(){
-  const u5=calc5L(levels),u3=calc3L(levels);
-  const rows=[['Field','Value'],['Health State',DIMS.map(k=>levels[k]).join('')],
-    ...DIMS.map(k=>[DIM_LABELS[k],levels[k]]),
-    ['EQ-5D-5L Utility',u5.toFixed(4)],['EQ-5D-3L Mapped',u3.toFixed(4)],
-    ['QALY Estimate',((u5*(parseFloat(document.getElementById('qaly-years').value)||10)).toFixed(4))],
-    ...DIMS.map(k=>[k+' Decrement',COEFF[k][levels[k]-1]]),
-    ['Source','Rowen et al. (2026) Value in Health']];
+  const ub=u5(lb),ua_v=u5(la),yrs=parseFloat(document.getElementById('qyrs').value)||10;
+  const rows=[['Field','Before','After'],
+    ['Health State',DIMS.map(k=>lb[k]).join(''),DIMS.map(k=>la[k]).join('')],
+    ...DIMS.map(k=>[DLBLS[k],lb[k],la[k]]),
+    ['Utility',ub.toFixed(4),ua_v.toFixed(4)],
+    ['QALYs ('+yrs+' yrs)',(ub*yrs).toFixed(4),(ua_v*yrs).toFixed(4)],
+    ['QALY Gain','',((ua_v-ub)*yrs).toFixed(4)],
+    ['Utility Gain','',((ua_v-ub)).toFixed(4)],
+    ['Source','Rowen et al. (2026) Value in Health','doi:10.1016/j.jval.2026.03.008']];
   const b=new Blob([rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n')],{type:'text/csv'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`eq5d5l_${DIMS.map(k=>levels[k]).join('')}.csv`;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`eq5d5l_comparison.csv`;a.click();
 }
 
 // ── COHORT ────────────────────────────────────────────────────
-let cohortData=[];
-let cohortChart=null;
-
-function seededRand(seed){
-  let s=seed%2147483647;if(s<=0)s+=2147483646;
-  return()=>{s=s*16807%2147483647;return(s-1)/2147483646;};
-}
-
-function generateCohort(){
-  const n=Math.max(10,Math.min(5000,parseInt(document.getElementById('cohort-n').value)||200));
-  const seed=parseInt(document.getElementById('cohort-seed').value)||2026;
+let cohData=[];
+function seededRand(seed){let s=seed%2147483647;if(s<=0)s+=2147483646;return()=>{s=s*16807%2147483647;return(s-1)/2147483646;};}
+function genCohort(){
+  const n=Math.max(10,Math.min(5000,parseInt(document.getElementById('cn').value)||200));
+  const seed=parseInt(document.getElementById('cs').value)||2026;
   const rand=seededRand(seed);
-  cohortData=[];
-  for(let i=0;i<n;i++){
-    const row={};
-    DIMS.forEach(k=>{row[k]=Math.floor(rand()*5)+1;});
-    row.utility=parseFloat(calc5L(row).toFixed(4));
-    cohortData.push(row);
-  }
+  cohData=[];
+  for(let i=0;i<n;i++){const r={};DIMS.forEach(k=>{r[k]=Math.floor(rand()*5)+1;});r.utility=parseFloat(u5(r).toFixed(4));cohData.push(r);}
   renderCohort();
 }
-
 function handleCSV(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=ev=>{
     const lines=ev.target.result.trim().split('\n');
-    const header=lines[0].split(',').map(h=>h.trim().toUpperCase());
-    const cols={MO:header.indexOf('MO'),SC:header.indexOf('SC'),UA:header.indexOf('UA'),PD:header.indexOf('PD'),AD:header.indexOf('AD')};
+    const hdr=lines[0].split(',').map(h=>h.trim().toUpperCase());
+    const cols=Object.fromEntries(DIMS.map(k=>[k,hdr.indexOf(k)]));
     if(Object.values(cols).some(i=>i<0)){alert('CSV must have columns: MO, SC, UA, PD, AD');return;}
-    cohortData=[];
+    cohData=[];
     for(let i=1;i<lines.length;i++){
-      const parts=lines[i].split(',');
-      const row={};let valid=true;
-      DIMS.forEach(k=>{const v=parseInt(parts[cols[k]]);if(v>=1&&v<=5)row[k]=v;else valid=false;});
-      if(valid){row.utility=parseFloat(calc5L(row).toFixed(4));cohortData.push(row);}
+      const p=lines[i].split(',');const r={};let ok=true;
+      DIMS.forEach(k=>{const v=parseInt(p[cols[k]]);if(v>=1&&v<=5)r[k]=v;else ok=false;});
+      if(ok){r.utility=parseFloat(u5(r).toFixed(4));cohData.push(r);}
     }
     renderCohort();
-  };
-  reader.readAsText(file);
+  };reader.readAsText(file);
 }
-
 function renderCohort(){
-  if(!cohortData.length)return;
-  const utils=cohortData.map(r=>r.utility);
+  if(!cohData.length)return;
+  const utils=cohData.map(r=>r.utility);
   const mean=utils.reduce((a,b)=>a+b,0)/utils.length;
   const sorted=[...utils].sort((a,b)=>a-b);
-  const median=sorted.length%2===0?(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2:sorted[Math.floor(sorted.length/2)];
-  const variance=utils.reduce((a,b)=>a+(b-mean)**2,0)/utils.length;
-  const sd=Math.sqrt(variance);
-  const min=sorted[0],max=sorted[sorted.length-1];
-  const pctBelow0=utils.filter(u=>u<0).length/utils.length*100;
-
-  // histogram bins
-  const bins=20,binW=2/bins;
-  const counts=Array(bins).fill(0);
-  utils.forEach(u=>{const i=Math.min(bins-1,Math.floor((u+1)/binW));counts[i]++;});
-  const binLabels=Array.from({length:bins},(_,i)=>((-1+i*binW)+0.05).toFixed(2));
-
-  document.getElementById('cohort-results').innerHTML=`
-    <div>
-      <div class="card" style="margin-bottom:1rem">
-        <div class="card-title">Summary Statistics — ${cohortData.length} patients</div>
-        <div class="stat-grid">
-          <div class="stat-cell"><span class="stat-val">${mean.toFixed(3)}</span><span class="stat-lbl">Mean</span></div>
-          <div class="stat-cell"><span class="stat-val">${median.toFixed(3)}</span><span class="stat-lbl">Median</span></div>
-          <div class="stat-cell"><span class="stat-val">${sd.toFixed(3)}</span><span class="stat-lbl">Std Dev</span></div>
-          <div class="stat-cell"><span class="stat-val">${min.toFixed(3)}</span><span class="stat-lbl">Min</span></div>
-          <div class="stat-cell"><span class="stat-val">${max.toFixed(3)}</span><span class="stat-lbl">Max</span></div>
-          <div class="stat-cell"><span class="stat-val">${pctBelow0.toFixed(1)}%</span><span class="stat-lbl">Below 0</span></div>
-        </div>
+  const med=sorted.length%2===0?(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2:sorted[Math.floor(sorted.length/2)];
+  const sd=Math.sqrt(utils.reduce((a,b)=>a+(b-mean)**2,0)/utils.length);
+  const pctb0=utils.filter(u=>u<0).length/utils.length*100;
+  const bins=20,bw=2/bins;
+  const bcts=Array(bins).fill(0);
+  utils.forEach(u=>{const i=Math.min(bins-1,Math.floor((u+1)/bw));bcts[i]++;});
+  const blbls=Array.from({length:bins},(_,i)=>((-1+i*bw)+.05).toFixed(2));
+  document.getElementById('coh-results').innerHTML=`
+  <div>
+    <div class="card" style="margin-bottom:.9rem">
+      <div class="ctitle">Summary Statistics — ${cohData.length.toLocaleString()} patients</div>
+      <div class="sgrid">
+        <div class="scell"><span class="sv">${mean.toFixed(3)}</span><span class="sl">Mean</span></div>
+        <div class="scell"><span class="sv">${med.toFixed(3)}</span><span class="sl">Median</span></div>
+        <div class="scell"><span class="sv">${sd.toFixed(3)}</span><span class="sl">Std Dev</span></div>
+        <div class="scell"><span class="sv">${sorted[0].toFixed(3)}</span><span class="sl">Min</span></div>
+        <div class="scell"><span class="sv">${sorted[sorted.length-1].toFixed(3)}</span><span class="sl">Max</span></div>
+        <div class="scell"><span class="sv">${pctb0.toFixed(1)}%</span><span class="sl">Below 0</span></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-title">Utility Distribution</div>
-        <div class="chart-sub">Histogram of EQ-5D-5L utility values across the cohort</div>
-        <div style="position:relative;height:220px"><canvas id="cohortChart"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Mean Utility by Dimension Level</div>
-        <div class="chart-sub">Average patient utility segmented by each dimension's severity</div>
-        <div style="position:relative;height:220px"><canvas id="cohortDimChart"></canvas></div>
-      </div>
-    </div>`;
-
-  document.getElementById('cohort-export-row').style.display='block';
-
+    </div>
+    <div class="cc"><div class="cctitle">Utility Distribution</div><div class="ccsub">Histogram across cohort</div><div style="position:relative;height:200px"><canvas id="cohChart2"></canvas></div></div>
+    <div class="cc"><div class="cctitle">Mean Utility by Dimension Level</div><div class="ccsub">How each dimension's severity relates to average cohort utility</div><div style="position:relative;height:200px"><canvas id="cohDimChart2"></canvas></div></div>
+  </div>`;
+  document.getElementById('coh-exprow').style.display='block';
   setTimeout(()=>{
-    const ctx=document.getElementById('cohortChart').getContext('2d');
-    if(cohortChart){cohortChart.destroy();}
-    cohortChart=new Chart(ctx,{
-      type:'bar',
-      data:{labels:binLabels,datasets:[{data:counts,backgroundColor:'#1a4a3c',borderRadius:2,borderSkipped:false}]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`Count: ${c.parsed.y}`}}},
-        scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#8a877e',maxTicksLimit:10}},
-          y:{grid:{color:'rgba(128,128,128,0.08)'},ticks:{font:{size:10},color:'#8a877e'},border:{display:false}}}}
+    if(cohChart){cohChart.destroy();}
+    cohChart=new Chart(document.getElementById('cohChart2').getContext('2d'),{
+      type:'bar',data:{labels:blbls,datasets:[{data:bcts,backgroundColor:'#1a4a3c',borderRadius:2,borderSkipped:false}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`Count: ${c.parsed.y}`}}},
+        scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#8a877e',maxTicksLimit:10}},y:{grid:{color:'rgba(128,128,128,0.06)'},ticks:{font:{size:10},color:'#8a877e'},border:{display:false}}}}
     });
-
-    // dim profile chart
-    const dimMeans=DIMS.map(k=>{
-      const byLevel=[1,2,3,4,5].map(l=>{
-        const pts=cohortData.filter(r=>r[k]===l).map(r=>r.utility);
-        return pts.length?pts.reduce((a,b)=>a+b,0)/pts.length:null;
-      });
-      return byLevel;
-    });
-    const ctx2=document.getElementById('cohortDimChart').getContext('2d');
-    new Chart(ctx2,{
+    const dimMeans=DIMS.map(k=>[1,2,3,4,5].map(l=>{const pts=cohData.filter(r=>r[k]===l).map(r=>r.utility);return pts.length?pts.reduce((a,b)=>a+b,0)/pts.length:null;}));
+    if(cohDimChart){cohDimChart.destroy();}
+    cohDimChart=new Chart(document.getElementById('cohDimChart2').getContext('2d'),{
       type:'line',
-      data:{
-        labels:['Level 1','Level 2','Level 3','Level 4','Level 5'],
-        datasets:DIMS.map((k,i)=>({label:DIM_LABELS[k],data:dimMeans[i],
-          borderColor:Object.values(DIM_COLORS)[i],backgroundColor:'transparent',
-          pointRadius:4,pointHoverRadius:6,tension:.3,borderWidth:2}))
-      },
+      data:{labels:['Level 1','Level 2','Level 3','Level 4','Level 5'],
+        datasets:DIMS.map((k,i)=>({label:DLBLS[k],data:dimMeans[i],borderColor:Object.values(DCOLS)[i],backgroundColor:'transparent',pointRadius:4,tension:.3,borderWidth:2}))},
       options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},padding:12,boxWidth:10,boxHeight:10}}},
-        scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#8a877e'}},
-          y:{grid:{color:'rgba(128,128,128,0.08)'},ticks:{font:{size:10},color:'#8a877e'},border:{display:false}}}}
+        plugins:{legend:{display:true,position:'bottom',labels:{font:{size:9},padding:10,boxWidth:8,boxHeight:8}}},
+        scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#8a877e'}},y:{grid:{color:'rgba(128,128,128,0.06)'},ticks:{font:{size:10},color:'#8a877e'},border:{display:false}}}}
     });
   },50);
 }
-
-function exportCohortCSV(){
-  if(!cohortData.length)return;
-  const header=['Patient',...DIMS,'EQ5D_5L_Utility'];
-  const rows=[header,...cohortData.map((r,i)=>[i+1,...DIMS.map(k=>r[k]),r.utility])];
+function expCohortCSV(){
+  if(!cohData.length)return;
+  const rows=[['Patient',...DIMS,'EQ5D_5L_Utility'],...cohData.map((r,i)=>[i+1,...DIMS.map(k=>r[k]),r.utility])];
   const b=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='eq5d5l_cohort_results.csv';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='eq5d5l_cohort.csv';a.click();
 }
 
 // ── EXPLORER ──────────────────────────────────────────────────
-let allStates=[];
-let filteredStates=[];
-let explorerBuilt=false;
-let explorerPage=1;
-const PAGE_SIZE=30;
-let sortKey='profile';
-let sortDir=1;
-
-function buildExplorer(){
-  allStates=[];
+let allSt=[],filtSt=[],expBuilt=false,expPage=1;
+const PS=30;let sKey='profile',sDir=1;
+function buildExp(){
+  allSt=[];
   for(let mo=1;mo<=5;mo++)for(let sc=1;sc<=5;sc++)for(let ua=1;ua<=5;ua++)for(let pd=1;pd<=5;pd++)for(let ad=1;ad<=5;ad++){
-    const lvls={MO:mo,SC:sc,UA:ua,PD:pd,AD:ad};
-    allStates.push({profile:`${mo}${sc}${ua}${pd}${ad}`,MO:mo,SC:sc,UA:ua,PD:pd,AD:ad,utility:parseFloat(calc5L(lvls).toFixed(4))});
+    const lv={MO:mo,SC:sc,UA:ua,PD:pd,AD:ad};
+    allSt.push({profile:`${mo}${sc}${ua}${pd}${ad}`,MO:mo,SC:sc,UA:ua,PD:pd,AD:ad,utility:parseFloat(u5(lv).toFixed(4))});
   }
-  filteredStates=[...allStates];
-  explorerBuilt=true;
-  renderExplorerPage();
+  filtSt=[...allSt];expBuilt=true;renderExpPage();
 }
-
-function filterExplorer(){
-  const q=(document.getElementById('exp-search').value||'').trim();
-  const minV=document.getElementById('exp-min').value!==''?parseFloat(document.getElementById('exp-min').value):-Infinity;
-  const maxV=document.getElementById('exp-max').value!==''?parseFloat(document.getElementById('exp-max').value):Infinity;
-  filteredStates=allStates.filter(s=>{
-    if(q&&!s.profile.startsWith(q))return false;
-    if(s.utility<minV||s.utility>maxV)return false;
-    return true;
-  });
-  explorerPage=1;
-  renderExplorerPage();
+function filterExp(){
+  const q=(document.getElementById('esrch').value||'').trim();
+  const mn=document.getElementById('emin').value!==''?parseFloat(document.getElementById('emin').value):-Infinity;
+  const mx=document.getElementById('emax').value!==''?parseFloat(document.getElementById('emax').value):Infinity;
+  filtSt=allSt.filter(s=>(!q||s.profile.startsWith(q))&&s.utility>=mn&&s.utility<=mx);
+  expPage=1;renderExpPage();
 }
-
-function sortExplorer(key){
-  if(sortKey===key)sortDir*=-1; else{sortKey=key;sortDir=1;}
-  document.querySelectorAll('.sort-arrow').forEach(el=>el.textContent='↕');
-  const arrow=document.getElementById('sort-'+key);
-  if(arrow)arrow.textContent=sortDir===1?'↑':'↓';
-  filteredStates.sort((a,b)=>{
-    const av=key==='profile'?a.profile:a[key];
-    const bv=key==='profile'?b.profile:b[key];
-    return(av>bv?1:av<bv?-1:0)*sortDir;
-  });
-  explorerPage=1;
-  renderExplorerPage();
+function sortExp(key){
+  if(sKey===key)sDir*=-1;else{sKey=key;sDir=1;}
+  document.querySelectorAll('[id^="sa-"]').forEach(el=>el.textContent='↕');
+  const el=document.getElementById('sa-'+key);if(el)el.textContent=sDir===1?'↑':'↓';
+  filtSt.sort((a,b)=>{const av=a[key],bv=b[key];return(av>bv?1:av<bv?-1:0)*sDir;});
+  expPage=1;renderExpPage();
 }
-
-function renderExplorerPage(){
-  const total=filteredStates.length;
-  const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
-  explorerPage=Math.max(1,Math.min(explorerPage,totalPages));
-  const start=(explorerPage-1)*PAGE_SIZE;
-  const page=filteredStates.slice(start,start+PAGE_SIZE);
-  const currentState=DIMS.map(k=>levels[k]).join('');
-
-  document.getElementById('exp-count').innerHTML=`<span>${total.toLocaleString()}</span> profiles found`;
-
-  const tbody=document.getElementById('exp-tbody');
-  tbody.innerHTML='';
+function renderExpPage(){
+  const tot=filtSt.length,tp=Math.max(1,Math.ceil(tot/PS));
+  expPage=Math.max(1,Math.min(expPage,tp));
+  const page=filtSt.slice((expPage-1)*PS,(expPage-1)*PS+PS);
+  const cur=DIMS.map(k=>lb[k]).join('');
+  document.getElementById('ecnt').innerHTML=`<span>${tot.toLocaleString()}</span> profiles found`;
+  const tbody=document.getElementById('etbody');tbody.innerHTML='';
   page.forEach(s=>{
-    const isCurrent=s.profile===currentState;
-    const tr=document.createElement('tr');
-    if(isCurrent)tr.className='current-highlight';
-    tr.innerHTML=`
-      <td><a class="profile-link" onclick="loadFromExplorer('${s.profile}')">${s.profile}${isCurrent?' ★':''}</a></td>
+    const isc=s.profile===cur;
+    const tr=document.createElement('tr');if(isc)tr.className='cur-row';
+    tr.innerHTML=`<td><span class="plink" onclick="loadExp('${s.profile}')">${s.profile}${isc?' ★':''}</span></td>
       <td>${s.MO}</td><td>${s.SC}</td><td>${s.UA}</td><td>${s.PD}</td><td>${s.AD}</td>
-      <td style="font-family:'DM Mono',monospace;font-weight:500;color:${s.utility>=0.5?'var(--accent)':s.utility>=0?'var(--warn)':'var(--accent2)'}">${s.utility.toFixed(3)}</td>
-      <td><span class="health-badge ${getBadgeClass(s.utility)}">${getBadgeText(s.utility)}</span></td>`;
+      <td style="font-family:'DM Mono',monospace;font-weight:500;color:${s.utility>=.5?'#1a4a3c':s.utility>=0?'#7a4d00':'#c84b1a'}">${s.utility.toFixed(3)}</td>
+      <td><span class="hbdg ${bdg(s.utility)}">${bdgt(s.utility)}</span></td>`;
     tbody.appendChild(tr);
   });
-
-  // pagination
-  const pag=document.getElementById('exp-pagination');
-  pag.innerHTML='';
-  const addBtn=(label,page,disabled,active)=>{
-    const b=document.createElement('button');
-    b.className='page-btn'+(active?' active':'');
-    b.textContent=label;b.disabled=disabled;
-    b.onclick=()=>{explorerPage=page;renderExplorerPage();};
-    pag.appendChild(b);
-  };
-  addBtn('«',1,explorerPage===1,false);
-  addBtn('‹',explorerPage-1,explorerPage===1,false);
-  const span=document.createElement('span');
-  span.className='page-info';
-  span.textContent=`Page ${explorerPage} of ${totalPages}`;
-  pag.appendChild(span);
-  addBtn('›',explorerPage+1,explorerPage===totalPages,false);
-  addBtn('»',totalPages,explorerPage===totalPages,false);
+  const pgn=document.getElementById('epgn');pgn.innerHTML='';
+  const ab=(lbl,pg,dis,act)=>{const b=document.createElement('button');b.className='pbtn'+(act?' active':'');b.textContent=lbl;b.disabled=dis;b.onclick=()=>{expPage=pg;renderExpPage();};pgn.appendChild(b);};
+  ab('«',1,expPage===1,false);ab('‹',expPage-1,expPage===1,false);
+  const sp=document.createElement('span');sp.className='pinfo';sp.textContent=`Page ${expPage} of ${tp}`;pgn.appendChild(sp);
+  ab('›',expPage+1,expPage===tp,false);ab('»',tp,expPage===tp,false);
 }
-
-function loadFromExplorer(profile){
-  DIMS.forEach((k,i)=>{
-    const l=parseInt(profile[i]);
-    levels[k]=l;
-    const row=document.getElementById('btns-'+k);
-    row.querySelectorAll('.level-btn').forEach((b,j)=>{
-      b.classList.toggle('active',j===l-1);
-      b.style.cssText=(j===l-1)?`background:${DIM_COLORS[k]};color:#fff;border-color:${DIM_COLORS[k]}`:'';
-    });
-  });
-  switchTab('individual',document.querySelector('.nav-tab'));
-  document.querySelectorAll('.nav-tab')[0].classList.add('active');
-  document.querySelectorAll('.nav-tab')[1].classList.remove('active');
-  document.querySelectorAll('.nav-tab')[2].classList.remove('active');
+function loadExp(profile){
+  DIMS.forEach((k,i)=>{lb[k]=parseInt(profile[i]);});
+  refreshBtns(lb,'b');
+  history.push({state:profile,u:parseFloat(u5(lb).toFixed(4))});
+  if(history.length>MAX_HIST)history.shift();
+  switchTab('ind',document.querySelectorAll('.ntab')[0]);
+  document.querySelectorAll('.ntab').forEach((t,i)=>t.classList.toggle('active',i===0));
   update();
 }
 
 // ── INIT ──────────────────────────────────────────────────────
-buildSelectors();
-initGauge();
-initCompChart();
-initWeightChart();
+buildSel('sel-before',lb,'b');
+buildSel('sel-after',la,'a');
+initAUC();initRadar();initHist();initComp();initWt();
 update();
 </script>
 </body>
