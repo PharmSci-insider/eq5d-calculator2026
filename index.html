@@ -356,6 +356,12 @@ footer a:hover{text-decoration:underline}
         <div class="fgrp"><label class="flbl">Number of patients</label><input class="finput" type="number" id="cn" value="200" min="10" max="5000"></div>
         <div class="fgrp"><label class="flbl">Random seed</label><input class="finput" type="number" id="cs" value="2026"></div>
         <button class="btn btn-p" style="width:100%;justify-content:center" onclick="genCohort()">Generate Simulated Data</button>
+        <div style="margin-top:.75rem;background:#fef7e8;border:1px solid #e2e0d8;border-radius:10px;padding:.7rem .9rem">
+          <div style="font-size:.68rem;font-weight:600;color:#7a4d00;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">About simulated data</div>
+          <div style="font-size:.7rem;color:#5a5750;line-height:1.6">
+            Simulated results will differ from other tools using the same seed and N. This is expected — tools use different random number generators, so patient profiles differ. <b style="font-weight:500;color:#1a1917">This does not affect accuracy.</b> The EQ-5D-5L utility coefficients are identical across all tools. Upload real patient data (CSV) to get results that will match exactly across all calculators.
+          </div>
+        </div>
         <div class="upzone" onclick="document.getElementById('csvup').click()">
           <input type="file" id="csvup" accept=".csv" onchange="handleCSV(event)">
           <div style="font-size:1.2rem;margin-bottom:.25rem">↑</div>
@@ -786,6 +792,12 @@ function renderCohort(){
   const blbls=Array.from({length:bins},(_,i)=>((-1+i*bw)+.05).toFixed(2));
   document.getElementById('coh-results').innerHTML=`
   <div>
+    <div style="display:flex;align-items:flex-start;gap:8px;background:#fef7e8;border:1px solid #e2e0d8;border-radius:10px;padding:.65rem .9rem;margin-bottom:.9rem">
+      <span style="flex-shrink:0">&#9888;</span>
+      <div style="font-size:.7rem;color:#5a5750;line-height:1.6">
+        <b style="font-weight:500;color:#1a1917">Simulated data.</b> These statistics will differ from other tools using the same seed and N because tools use different random number generators. The utility coefficients are identical. <b style="font-weight:500;color:#1a1917">Upload a real patient CSV</b> for results that match exactly across all calculators.
+      </div>
+    </div>
     <div class="card" style="margin-bottom:.9rem">
       <div class="ctitle">Summary Statistics — ${cohData.length.toLocaleString()} patients</div>
       <div class="sgrid">
